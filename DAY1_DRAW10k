@@ -1,0 +1,82 @@
+PFont bp;
+PGraphics c;
+
+void setup() {
+  size(800,800);
+  
+  bp = createFont("AUDIMRG_.TTF",25);
+  c = createGraphics(700,700);
+}
+
+void draw() {
+  background(0);
+  
+  //Sets cursor to cross.
+  noCursor();
+  
+  //Draws PGraphic 'c'.
+  c.beginDraw();
+    c.background(0);
+    
+    //Scales PGraphic and centers it.
+    c.scale(0.90);
+    c.translate(35,35);
+    
+    //Draws 100x100 ellipses with colour mapped to mouse position.
+    float tiles = 100;
+    float tileSize = c.width/tiles;
+  
+      for (int i = 0; i < tiles; i++) {
+      for (int j = 0; j < tiles; j++) {
+  
+         //Defines speed of sin wave.
+         float dt = 0.03 * frameCount;
+         
+         //Defines variables for sin waves effecting x and y axis.
+         float cx = i + 5 * sin(0.033 * j + dt) * sin(0.047 * i + dt);
+         float cy = j + 5 * sin(0.050 * i + dt) * sin(0.070 * j + dt);
+         
+         //Draws ellipses with positions determined by sin waves.
+         
+         c.fill(cx*dt,cy*dt,cx*dt);
+         c.ellipse(cx*tileSize,cy*tileSize,4,4);
+
+      }
+    }
+    
+  c.endDraw();
+  
+  //Draws PGraphic.
+  imageMode(CENTER);
+  image(c,width/2,height/2);
+
+  
+  //Draws day # and prompt summary
+  push();
+    translate(15,785);
+    textFont(bp);
+    fill(255);
+    text("DAY 1",0,0);
+  pop();
+  push();
+    translate(785,785);
+    textFont(bp);
+    fill(255);
+    textAlign(RIGHT);
+    text("DRAW 10K OF SMTH",0,0);
+  pop();
+   
+  /*
+  rec();
+  
+  if (frameCount == 1770) {
+  exit(); 
+  }
+  */
+  
+  //Draws cursor on the mouse.
+  stroke(255);
+  strokeWeight(2);
+  line(mouseX-5,mouseY,mouseX+5,mouseY);
+  line(mouseX,mouseY-5,mouseX,mouseY+5);
+}
