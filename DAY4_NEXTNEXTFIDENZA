@@ -1,0 +1,105 @@
+/*
+===============
+   MAIN TAB
+===============
+*/
+
+PFont bp;
+PGraphics pg;
+
+ArrayList<Particle> particles = new ArrayList(0);
+
+void setup() {
+  size(800,800);
+  background(0);
+  colorMode(HSB);
+  
+  frameRate(60);
+  
+  bp = createFont("AUDIMRG_.TTF",25);
+  pg = createGraphics(600,600);
+}
+
+void draw() {
+  //background(0);
+  
+  for (Particle p : particles) {
+   p.update();
+   p.display();
+  }
+  
+  if(keyPressed) {
+    for (int w = 0; w < 100; w++) {
+    particles.add(new Particle(random(width), random(height)));
+    }
+  }
+  
+  
+  push();
+    imageMode(CENTER);
+    translate(width/2, height/2);
+    image(pg,0,0);
+  pop();
+  
+  //Draws day # and prompt summary
+  push();
+    translate(20,780);
+    textFont(bp);
+    fill(255);
+    text("DAY 4",0,0);
+  pop();
+  push();
+    translate(780,780);
+    textFont(bp);
+    fill(255);
+    textAlign(RIGHT);
+    text("THE NEXT NEXT FIDENZA",0,0);
+  pop();
+}
+
+/*
+===============
+'PARTICLE' TAB
+===============
+*/
+
+
+class Particle {
+  
+  PVector position;
+  PVector velocity;
+  
+  Particle(float X, float Y) {
+    position = new PVector(X, Y);
+    velocity = new PVector(0, 0);
+  }
+  
+  void update() {    
+    float speed = 100;
+    float smth = 0.008; ;
+    
+    if (position.x > -50 & position.x < width+50 & position.y > -50 & position.y < height+50){
+      
+    
+    velocity = PVector.fromAngle(noise(position.x * smth, position.y * smth) * 4 * PI);
+    velocity.setMag(speed);
+    position.add(PVector.div(velocity, frameRate));
+    
+    
+    
+    }
+  }
+  
+  void display(){
+    
+   float smth = 0.001; ; 
+   float noiseValue = noise(position.x * smth, position.y * smth);
+    
+   noStroke();
+   fill((noiseValue * 255 + 102)%255,random(255),255);
+   circle(position.x, position.y, 1);
+    
+    
+  }
+}
+
