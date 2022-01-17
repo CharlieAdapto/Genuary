@@ -1,0 +1,141 @@
+/*
+==============
+   MAIN TAB
+==============
+*/
+
+star[] stars = new star[1000];
+
+PFont bp;
+float speed;
+
+void setup() {
+  size(800, 800, P3D);
+  bp = createFont("AUDIMRG_.TTF", 25);
+  
+  //Creates a number of new stars based on the value in the array.
+  for (int i = 0; i < stars.length; i++) {
+    stars[i] = new star();
+  }
+  frameRate(60);
+}
+
+void draw() {
+  background(0);
+  
+  push();
+    
+     float xSpeed = map(mouseX, 0, width, 0.01, 3);
+     float ySpeed = map(mouseY, 0, height, 0.01, 3);
+  
+    translate(width/2, height/2);
+    rotateY(radians(frameCount) * xSpeed);
+    rotateX(radians(frameCount) * ySpeed);
+    stroke(255);
+    fill(0);
+    
+    sphere(200);
+  
+  pop();
+  
+  //Makes 'speed' a global value mapped to cursors's x-value.
+  speed = map(mouseX, 0, width, 0, 40);
+
+  push();
+    translate(width/2,height/2);
+    
+    //Runs 'update()' and show(); for every new star created.
+    for (int i = 0; i < stars.length; i++) {
+      stars[i].update();
+      stars[i].show();
+    }
+  pop();
+  
+  //Draws day # and prompt summary
+  push();
+    translate(20,780);
+    textFont(bp);
+    fill(255);
+    text("DAY 3",0,0);
+  pop();
+  push();
+    translate(780,780);
+    textFont(bp);
+    fill(255);
+    textAlign(RIGHT);
+    text("SPACE",0,0);
+  pop();
+    
+}
+
+/*
+==============
+  'STAR' TAB
+==============
+*/
+
+class star {
+  
+  //Creates floats for values of x, y and z. 2D so z remains as width.
+  float x;
+  float y;
+  float z;
+  
+  //Creates float for 'pz' or previous z-position.
+  float pz;
+  
+  //Defines positions for every new star.
+  star() {
+   x = random(-width,   width);
+   y = random(-height, height);
+   z = random(width);
+   
+   //Starts pz at the starting position of 'z'.
+   pz = z;
+  }
+  
+  void update() {
+    
+    //Position of z is changed depending on 'speed' variable.
+    z = z - speed;
+    
+    //When the star exits the screen resets positions.
+    if (z < 1) {
+       z = width;
+       x = random(-width,   width);
+       y = random(-height, height);
+       
+       pz = z;
+    }
+    
+  }
+  
+  void show() {
+    fill(255);
+    noStroke();
+    
+    //Defines starting x and y values. that get smaller as width increases. The value is mapped to width and height.
+    float sx = map(x / z, 0, 1, 0,  width);
+    float sy = map(y / z, 0, 1, 0, height);
+    
+    //Defines a size for the ellipses as the get closer to the edge of the screen.
+    float r = map(z, 0, width, 4, 0);
+    ellipse(sx, sy, r, r);
+    
+    //Defines previous x and previous y in relation to previous z.
+    float px = map(x / pz, 0, 1, 0,  width);
+    float py = map(y / pz, 0, 1, 0, height);
+    
+    pz = z;
+    
+    //Draws a line between the previous positions of x and y and the new positions of x and y.
+    float c = random(255);
+    
+    stroke(c,c,c);
+    strokeWeight(2);
+    line(px, py, sx, sy);
+    
+  }
+}
+
+  
